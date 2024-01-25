@@ -1,42 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <style>
-        li {
-            list-style-type: circle;
-            padding: 5px;
-            margin: 5px;
-            border: 2px solid red;
-            border-radius: 5px;
-        }
-    </style>
+  <title>Tugas 3 - API User GitHub</title>
 </head>
-
 <body>
-    <div id="demo">
-        <h2>The XMLHttpRequest Object from File</h2>
-        <button type="button" onclick="loadDoc()">Load Document</button>
-    </div>
-    <div id="demo2"></div>
-    <script>
-        function loadDoc() {
-            const xhttp = new XMLHttpRequest();
-            xhttp.onload = function () {
-                var todolist = "<ul>";
-                var fileContent = this.responseText;
-                var textLines = fileContent.split("\n");
-                for (var i = 0, j = textLines.length; i < j; i++) {
-                    var currentLine = textLines[i];
-                    // for each line
-                    var list = "<li>" + currentLine + "</li>";
-                    todolist += list;
-                }
-                todolist += "</ul>";
-                document.getElementById("demo2").innerHTML = todolist;
-            }
-            xhttp.open("GET", "todolist_list.txt");
-            xhttp.send();
-        }
-    </script>
+  <form action="/" method="post">
+    <input type="text" name="username" placeholder="Username GitHub">
+    <input type="submit" value="Cari">
+  </form>
+
+  <?php
+    // Ambil username dari input form
+    $username = $_POST["username"];
+
+    // Buat permintaan ke API user GitHub
+    $url = "https://api.github.com/users/$username";
+    $response = file_get_contents($url);
+
+    // Dekoding JSON response
+    $data = json_decode($response, true);
+
+    // Tampilkan data user
+    if ($data) {
+      echo "<h1>Data User</h1>";
+      echo "<img src=\"$data[avatar_url]\">";
+      echo "<p>Nama: $data[name]</p>";
+      echo "<p>Tanggal daftar: $data[created_at]</p>";
+      echo "<p>Tanggal update: $data[updated_at]</p>";
+    } else {
+      echo "<p>User tidak ditemukan.</p>";
+    }
+  ?>
 </body>
 </html>
